@@ -8,49 +8,109 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
 {
     class GameEngine
     {
-        public Map map;
-        private int rounds;
-        private Unit[] units;
-        Random random = new Random();
-       
-        public GameEngine(int rounds)
-        {
-            this.rounds = rounds;
-            Map map = new Map(20);
-        }
-
-        public string GetMap()
-        {
-            return map.MapDisplay();
-        }
+        Map map;
+        bool isGameOver = false;
+        string winningFaction = "";
+        int round = 0;
 
         public GameEngine()
         {
-            map = new Map(20);
+            map = new Map(10);
         }
 
-        public void Round()
+        public bool IsGameOver
         {
-            int enemy;
+            get { return isGameOver; }
+        }
+        
+        public string WinningFaction
+        {
+            get { return winningFaction; }
+        }
+        public int Round
+        {
+            get { return round; }
+        }
 
-            for (int i = 0; i < map.units.Length; i++)
+        public string GetMapDisplay()
+        {
+            return map.GetMapDisplay();
+        }
+
+        public string GetUnitInfo()
+        {
+            string unitInfo = " ";
+            foreach (Unit unit in map.units)
             {
-                enemy = map.units[i].ClosestUnit(i, map.units);
+                unitInfo += unit + "\n";
+            }
+            return unitInfo;
+        }
 
-                if (enemy == -1)
+        public void Reset()
+        {
+            map.Reset();
+            isGameOver = false;
+            round = 0;
+        }
+
+        public void GameLoop()
+        {
+            foreach(Unit unit in map.units)
+            {
+                if (unit.Destroyed)
                 {
-                    break;
+                    continue;
+                }
+
+                Unit closestUnit = unit.ClosestUnit(map.units);
+
+                    if(closestUnit == null) {
+                        isGameOver = true;
+                        winningFaction = unit.Faction;
+                        map.UpdateMap();
+                        return;
+                    }
+
+                double healthPercentage = unit.Health / unit.MaxHealth;
+                if (healthPercentage <= 0.25)
+                {
+                    unit.RunAway();
+                }
+                else if (unit.AttackRange(closestUnit))
+                {
+                    unit.Combat(closestUnit);
+
                 }
                 else
                 {
-                    map.units[i].Move(map.units[i], map.units[enemy], map.TheSIZE);
+                    unit.Move(closestUnit);
+                }
+                StayInBounds(unit, map.Size);
+
+            }
+            map.UpdateMap();
+            round++;
+
+            void StayInBounds(Unit unit, int size)
+            {
+                if(unit.X < 0)
+                {
+                    unit.X = 0;
+                }
+                else if(unit.X >= size)
+                {
+                    unit.X = size - 1;
+                }
+                if(unit.Y < 0)
+                {
+                    unit.Y = 0;
+                }
+                else if (unit.Y >= size)
+                {
+                    unit.Y = size - 1;
                 }
             }
         }
-
-        
-        
-
-
     }//
 }//
