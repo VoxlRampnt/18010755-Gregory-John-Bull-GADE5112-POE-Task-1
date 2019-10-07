@@ -8,6 +8,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
 {
     class RangedUnit : Unit
     {
+        Random random = new Random();
         public RangedUnit(int x, int y, string faction) : base(x, y, 100, 1, 10, 3, faction, 'A')
         {
         }
@@ -78,7 +79,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
-                    closestDistance = otherUnit;
+                    closestUnit = otherUnit;
                 }
             }
             return closestUnit;
@@ -115,7 +116,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
         {
             {
                 attacking = false;
-                int direction = Random.Next(0, 4);
+                int direction = random.Next(0, 4);
                 if (direction == 0)
                 {
                     x += 1;

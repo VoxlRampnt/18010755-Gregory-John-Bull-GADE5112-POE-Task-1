@@ -8,6 +8,8 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
 {
     class MeleeUnit : Unit
     {
+        Random random = new Random();
+
         public MeleeUnit(int x, int y, string faction) : base(x, y, 100, 1, 10, 1, faction, 'M')
         {
         }
@@ -78,7 +80,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
-                    closestDistance = otherUnit;
+                    closestUnit = otherUnit;
                 }
             }
             return closestUnit;
@@ -114,7 +116,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
         public override void RunAway() // looks to see if units are to low for combat and must run away as well as that they don't run out of map
         {
             attacking = false;
-            int direction = Random.Next(0, 4);
+            int direction = random.Next(0, 4);
             if (direction == 0)
             {
                 x += 1;

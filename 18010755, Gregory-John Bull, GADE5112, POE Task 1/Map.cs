@@ -22,7 +22,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
             Reset();
         }
 
-        public Unit[] units
+        public Unit[] Units
         {
             get { return units; }
         }
@@ -46,7 +46,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
             return mapString;
         }
 
-        public void UpdateMap()
+        public void UpdateMap() // updates the map as the game goes on
         {
             for(int y = 0; y < SIZE; y++)
             {
@@ -57,7 +57,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
             }
         }
 
-        public void InitializeUnits()
+        public void InitializeUnits() // initializes the units onto the map
         {
             for(int i = 0; i < units.Length; i++)
             {
@@ -73,11 +73,11 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
                 }
                 if(unitType == 0)
                 {
-                    units[i] = new MeleeUnit(x, y, faction[factionIndex]);
+                    units[i] = new MeleeUnit(x, y, factions[factionIndex]);
                 }
                 else
                 {
-                    units[i] = new MeleeUnit(x, y, faction[factionIndex]);
+                    units[i] = new MeleeUnit(x, y, factions[factionIndex]);
                 }
                 map[x, y] = units[i].Faction[0] + "/" + units[i].Symbol;
             }

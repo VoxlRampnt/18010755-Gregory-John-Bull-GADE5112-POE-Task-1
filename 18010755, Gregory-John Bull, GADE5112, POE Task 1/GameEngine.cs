@@ -40,7 +40,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
         public string GetUnitInfo()
         {
             string unitInfo = " ";
-            foreach (Unit unit in map.units)
+            foreach (Unit unit in map.Units)
             {
                 unitInfo += unit + "\n";
             }
@@ -56,14 +56,14 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
 
         public void GameLoop()
         {
-            foreach(Unit unit in map.units)
+            foreach(Unit unit in map.Units)
             {
                 if (unit.Destroyed)
                 {
                     continue;
                 }
 
-                Unit closestUnit = unit.ClosestUnit(map.units);
+                Unit closestUnit = unit.ClosestUnit(map.Units);
 
                     if(closestUnit == null) {
                         isGameOver = true;
