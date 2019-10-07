@@ -9,109 +9,87 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
 {
     class Map
     {
-        private const int SIZE = 20;
-        private char[,] mapArray = new char[SIZE, SIZE];
-        public Unit[] units;
-        private static Random random = new Random();
+        int SIZE = 20;
+        Random random = new Random();
+        int numUnits;
+        Unit[] units;
+        string[,] map;
+        string[] factions = { "Exo-Team", "Alt-Team" };
 
         public Map(int numUnits)
         {
-            units = new Unit[numUnits];
-            BattleField();
+            this.numUnits = numUnits;
+            Reset();
         }
 
-        public int TheSIZE
+        public Unit[] units
+        {
+            get { return units; }
+        }
+      
+        public int Size
         {
             get { return SIZE; }
         }
 
-        private void BattleField()
+        public string GetMapDisplay()
         {
-            for(int i = 0; i < units.Length; i++)
+            string mapString = " ";
+            for(int y = 0; y < SIZE; y++)
             {
-                if (random.Next(0, 2) == 0)
+                for(int x = 0; x < SIZE; x++)
                 {
-                    MeleeUnit meleeUnit = new MeleeUnit();
-                    meleeUnit.X = random.Next(0, SIZE);
-                    meleeUnit.Y = random.Next(0, SIZE);
-
-                    if(random.Next(0, 2) == 0)
-                    {
-                        meleeUnit.Faction = 0;
-                    }
-                    else
-                    {
-                        meleeUnit.Faction = 1;
-                    }
-
-                    units[i] = meleeUnit;
+                    mapString += map[x, y];
                 }
-                else 
+                mapString += "\n";
+            }
+            return mapString;
+        }
+
+        public void UpdateMap()
+        {
+            for(int y = 0; y < SIZE; y++)
+            {
+                for(int x = 0; x < SIZE; x++)
                 {
-                    RangedUnit rangedUnit = new RangedUnit();
-                    rangedUnit.X = random.Next(0, SIZE);
-                    rangedUnit.Y = random.Next(0, SIZE);
-
-                    if (random.Next(0, 2) == 0)
-                    {
-                        rangedUnit.Faction = 0;
-                    }
-                    else
-                    {
-                        rangedUnit.Faction = 1;
-                    }
-
-                    units[i] = rangedUnit;
+                    map[x, y] = " . ";
                 }
             }
         }
 
-       /* public void UnitInformation(RichTextBox txtbox)
+        public void InitializeUnits()
         {
-            for (int i = 0; i < units.Length; i++)
-            {
-                txtbox.Text += units[i].ToString() + "\n";
-            }
-        }*/
-
-        public string MapDisplay()
-        {
-            string map = "";
-            for(int col = 0; col < SIZE; col++)
-            {
-                for (int row = 0; row < SIZE; row++)
-                {
-                    mapArray[col, row] = '\0';
-                }
-            }
-
             for(int i = 0; i < units.Length; i++)
             {
-                mapArray[units[i].Y, units[i].X] = units[i].Symbol;
-                Console.WriteLine(units[i].Y + units[i].X);
-            }
+                int x = random.Next(0, SIZE);
+                int y = random.Next(0, SIZE);
+                int factionIndex = random.Next(0, 2);
+                int unitType = random.Next(0, 2);
 
-            for(int col = 0; col < SIZE; col++)
-            {
-                for(int row = 0; row < SIZE; row++)
+                while(map[x,y] != null)
                 {
-                    if (mapArray[col, row] == '\0')
-                    {
-                        mapArray[col, row] = '=';
-                        map += '=';
-                        map += "  ";
-                    }
-                    else
-                    {
-                        map += mapArray[col, row];
-                        map += "  ";
-                    }
+                    x = random.Next(0, SIZE);
+                    y = random.Next(0, SIZE);
                 }
-                map += "\n";
+                if(unitType == 0)
+                {
+                    units[i] = new MeleeUnit(x, y, faction[factionIndex]);
+                }
+                else
+                {
+                    units[i] = new MeleeUnit(x, y, faction[factionIndex]);
+                }
+                map[x, y] = units[i].Faction[0] + "/" + units[i].Symbol;
             }
-            return map;
         }
 
+        public void Reset()
+        {
+            map = new string[SIZE, SIZE];
+            units = new Unit[numUnits];
+            InitializeUnits();
+            UpdateMap();
+        }
         
     }//
 }//
