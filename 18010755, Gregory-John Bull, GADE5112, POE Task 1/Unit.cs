@@ -8,11 +8,13 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
 {
     public abstract class Unit
     {
-        protected int x, y, health, maxHealth, speed, attack, attackRange, faction, restCounter = 1;
+        protected int x, y, health, maxHealth, speed, attack, attackRange;
+        protected string faction;
         protected char symbol;
-        protected bool attacking;
+        protected bool attacking = false;
+        protected bool destroyed = false;
 
-        protected Unit(int x, int y, int health, int MaxHealth, int speed, int attack, int attackRange, int faction, char symbol, bool attacking)
+        public Unit(int x, int y, int health, int speed, int attack, int attackRange, string faction, char symbol)
         {
             this.x = x;
             this.y = y;
@@ -23,76 +25,62 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
             this.attackRange = attackRange;
             this.faction = faction;
             this.symbol = symbol;
-            this.attacking = attacking;
+            
         }
-
-        public abstract void Move(Unit unit, Unit enemy, int size);
-
-        public abstract void Combat(Unit unit, Unit enemy);
-
-        public abstract bool AttackRange(Unit unit, Unit enemy);
-
-        public abstract int ClosestUnit(int num, Unit[] array);
-
-        public abstract void DeathCheck();
-
-        public abstract bool RestCounter();
-
-        public abstract override string ToString();
-
 
         public abstract int X
         {
             get;
             set;
         }
-
         public abstract int Y
         {
             get;
             set;
         }
-
         public abstract int Health
         {
             get;
             set;
         }
-
         public abstract int MaxHealth
         {
             get;
             
         }
-
-        public abstract int Speed
-        {
-            get;
-            set;
-        }
-
-        public abstract int Attack
-        {
-            get;
-            set;
-        }
-
         public abstract char Symbol
         {
             get;
         }
-
-        public abstract int Faction
+        public abstract string Faction
         {
             get;
-            set;
+            
         }
-
-        public abstract bool Attacking
+        public abstract bool Destroyed
         {
             get;
-            set;
+            
         }
-        public int Length { get; internal set; }
+
+
+        public abstract void Move(Unit closestUnit);
+        public abstract void Combat(Unit otherUnit);
+        public abstract void RunAway();
+        public abstract bool AttackRange(Unit otherUnit);
+        public abstract Unit ClosestUnit(Unit [] units);
+        public abstract void DeathCheck();
+
+        protected double GetDistance(Unit otherUnit)
+        {
+            double xDistance = otherUnit.X - X;
+            double yDistance = otherUnit.Y - Y;
+            return Math.Sqrt(xDistance * xDistance + yDistance * yDistance);
+        }
+
+        public override string ToString()
+        {
+            return "Postion: " + x + ", " + y + "\n" + "Health: " + health + " / " + maxHealth + "\n" + "Faction: " + faction + "(" + symbol + ")\n";
+        }
     }//
 }//

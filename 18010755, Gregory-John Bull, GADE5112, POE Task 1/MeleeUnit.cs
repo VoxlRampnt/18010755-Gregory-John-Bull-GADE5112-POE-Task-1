@@ -8,7 +8,7 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
 {
     class MeleeUnit : Unit
     {
-        public MeleeUnit() : base(0, 0, 45, 45, 1, 4, 1, 0, 'M', false)
+        public MeleeUnit(int x, int y, string faction) : base(x, y, 100, 1, 10, 1, faction, 'M')
         {
         }
 
@@ -24,12 +24,6 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
             set { y = value; }
         }
 
-        public override int Faction
-        {
-            get { return faction; }
-            set { faction = value; }
-        }
-
         public override int Health
         {
             get { return health; }
@@ -41,22 +35,10 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
             get { return health; }
         }
 
-        public override int Speed
+        public override string Faction
         {
-            get { return speed; }
-            set { speed = value; }
-        }
+            get { return faction; }
 
-        public override int Attack
-        {
-            get { return attack; }
-            set { attack = value; }
-        }
-
-        public override bool Attacking
-        {
-            get { return attacking; }
-            set { attacking = value; }
         }
 
         public override char Symbol
@@ -64,203 +46,92 @@ namespace _18010755__Gregory_John_Bull__GADE5112__POE_Task_1
             get { return symbol; }
         }
 
-        public override int ClosestUnit(int num, Unit[] uArray)
+        public override bool Destroyed
         {
-            int index = -1;
+            get { return destroyed; }
+        }
 
-            double dist = Double.MaxValue;
+        public override bool AttackRange(Unit otherUnit)
+        {
+            return GetDistance(otherUnit) <= attackRange;
+        }
 
-            for (int l = 0; l < uArray[num].Faction;)
+        public override void DeathCheck() //  looks to see if units are dead
+        {
+            destroyed = true;
+            attacking = false;
+            symbol = 'X';
+        }
+
+        public override Unit ClosestUnit(Unit[] units) //looks to see if enemy units are in range
+        {
+            double closestDistance = int.MaxValue;
+            Unit closestUnit = null;
+
+            foreach (Unit otherUnit in units)
             {
-                if (uArray[l].Faction == uArray[num].Faction)
+                if (otherUnit == this || otherUnit.Faction == faction || otherUnit.Destroyed)
                 {
                     continue;
                 }
-                else
+                double distance = GetDistance(otherUnit);
+                if (distance < closestDistance)
                 {
-                    if (dist > Math.Sqrt(Math.Pow(uArray[l].X - uArray[num].X, 2) + Math.Pow(uArray[l].Y - uArray[num].Y, 2)))
-                    {
-
-                        index = l;
-                    }
+                    closestDistance = distance;
+                    closestDistance = otherUnit;
                 }
-
             }
-
-            return index;
-
+            return closestUnit;
         }
 
-        public override bool AttackRange(Unit unit, Unit enemy)
+        public override void Combat(Unit otherUnit) //controls combat between units
         {
-            if (Math.Sqrt(Math.Pow(unit.X - enemy.X, 2) + Math.Pow(unit.Y - enemy.Y, 2)) <= attackRange)
+            attacking = false;
+            otherUnit.Health -= attack;
+
+            if (otherUnit.Health <= 0)
             {
-                return true;
+                otherUnit.DeathCheck();
+            }
+        }
+
+        public override void Move(Unit closestUnit) // contols the movement of units and to make sure units stay in map
+        {
+            attacking = false;
+            int xDistance = closestUnit.X - X;
+            int yDistance = closestUnit.Y - Y;
+
+            if (Math.Abs(xDistance) > Math.Abs(yDistance))
+            {
+                x += Math.Sign(xDistance);
             }
             else
             {
-                return false;
+                y += Math.Sign(yDistance);
             }
-
         }
 
-        public override void Combat(Unit unit, Unit enemy)
+        public override void RunAway() // looks to see if units are to low for combat and must run away as well as that they don't run out of map
         {
-            throw new NotImplementedException();
-        }
-
-        public override void Move(Unit unit, Unit enemy, int size)
-        {
-            double dUP = 0;
-            double dDOWN = 0;
-            double dLEFT = 0;
-            double dRIGHT = 0;
-            Random random = new Random();
-            int check;
-
-            dUP = Math.Sqrt(Math.Pow(unit.X - enemy.X, 2) + Math.Pow(unit.Y - enemy.Y, 2));
-            dDOWN = Math.Sqrt(Math.Pow(unit.X - enemy.X, 2) + Math.Pow(unit.Y - enemy.Y, 2));
-            dLEFT = Math.Sqrt(Math.Pow(unit.X - enemy.X, 2) + Math.Pow(unit.Y - enemy.Y, 2));
-            dRIGHT = Math.Sqrt(Math.Pow(unit.X - enemy.X, 2) + Math.Pow(unit.Y - enemy.Y, 2));
-
-            if (unit.RestCounter() != true)
+            attacking = false;
+            int direction = Random.Next(0, 4);
+            if (direction == 0)
             {
-                if (unit.Health > unit.MaxHealth * 0.25)
-                {
-                    if (dUP == dRIGHT && dUP == dDOWN && dUP == dLEFT)
-                    {
-                        check = random.Next(0, 4);
-                        if (check == 0)
-                        {
-                            if (unit.Y != 0)
-                            {
-                                unit.Y--;
-                            }
-                        }
-                        else if (check == 1)
-                        {
-                            if (unit.X != size - 1)
-                            {
-                                unit.X++;
-                            }
-                        }
-                        else if (check == 2)
-                        {
-                            if (unit.Y != size - 1)
-                            {
-                                unit.Y++;
-                            }
-                        }
-                        else if (check == 0)
-                        {
-                            if (unit.X != 0)
-                            {
-                                unit.X--;
-                            }
-                        }
-                    }
-                    else if (dUP == dDOWN)
-                    {
-                        check = random.Next(0, 2);
-                        if (check == 0)
-                        {
-                            if (unit.Y != 0)
-                            {
-                                unit.Y--;
-                            }
-                        }
-                        else if (check == 1)
-                        {
-                            if (unit.Y != size - 1)
-                            {
-                                unit.Y++;
-                            }
-                        }
-                        else if (dRIGHT == dLEFT)
-                        {
-                            check = random.Next(0, 2);
-                            if (check == 0)
-                            {
-                                if (unit.X != 0)
-                                {
-                                    unit.X--;
-                                }
-                            }
-                            else if (check == 1)
-                            {
-                                if (unit.X != size - 1)
-                                {
-                                    unit.X++;
-                                }
-                            }
-                        }
-                        else if (dUP > dRIGHT && dUP > dDOWN && dUP > dLEFT && unit.Y != 0)
-                        {
-                            unit.Y--;
-                        }
-                        else if (dRIGHT > dDOWN && dRIGHT > dLEFT && dRIGHT > dUP && unit.X != size - 1)
-                        {
-                            unit.X++;
-                        }
-                        else if (dDOWN > dLEFT && dDOWN > dUP && dDOWN > dRIGHT && unit.Y != size - 1)
-                        {
-                            unit.Y++;
-                        }
-                        else if (dLEFT > dUP && dLEFT > dRIGHT && dLEFT > dDOWN && unit.X != 0)
-                        {
-                            unit.X--;
-                        }
-                    }
-
-                }
-                else
-                {
-                    if (dUP < dRIGHT && dUP < dDOWN && dUP < dLEFT)
-                    {
-                        unit.Y--;
-                    }
-                    else if (dRIGHT < dDOWN && dRIGHT < dLEFT && dRIGHT < dUP)
-                    {
-                        unit.X++;
-                    }
-                    else if (dDOWN < dLEFT && dDOWN < dUP && dDOWN < dRIGHT)
-                    {
-                        unit.Y++;
-                    }
-                    else if (dLEFT < dUP && dLEFT < dRIGHT && dLEFT < dDOWN)
-                    {
-                        unit.X--;
-                    }
-                }
+                x += 1;
             }
-
-
-
-        }
-
-        public override void DeathCheck()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string ToString()
-        {
-            return null;
-        }
-
-        public override bool RestCounter()
-        {
-            if (restCounter == speed)
+            else if (direction == 1)
             {
-                restCounter = 1;
-                return false;
-
+                x -= 1;
             }
-            restCounter++;
-            return true;
+            else if (direction == 2)
+            {
+                y += 1;
+            }
+            else
+            {
+                y -= 1;
+            }
         }
-
-
     }//
 }//
 
